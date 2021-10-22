@@ -3,5 +3,6 @@
 int main()
 {
     lambda::str_view str;
+
     return 0;
 }
