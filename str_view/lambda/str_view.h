@@ -31,6 +31,10 @@ template <typename CharT, typename Traits = std::char_traits<CharT>> struct basi
     /// </summary>
     static constexpr size_type npos = size_type(-1);
 
+    // --------------------------------------------------------------------------------------------------
+    // Constructors
+    // --------------------------------------------------------------------------------------------------
+
     /// <summary>
     /// Constructs an empty basic_string_view. After construction, data() is equal to nullptr
     /// </summary>
@@ -76,6 +80,9 @@ template <typename CharT, typename Traits = std::char_traits<CharT>> struct basi
     /// <returns></returns>
     constexpr basic_str_view &operator=(const basic_str_view &view) noexcept = default;
 
+    // --------------------------------------------------------------------------------------------------
+    // Iterators
+    // --------------------------------------------------------------------------------------------------
     /// <summary>
     /// Iterator that returns string_view first elem as CharT*
     /// </summary>
@@ -112,33 +119,109 @@ template <typename CharT, typename Traits = std::char_traits<CharT>> struct basi
     /// <returns></returns>
     const_reverse_iterator rend() const noexcept;
 
+    /// <summary>
+    ///
+    /// </summary>
+    /// <returns></returns>
     const_reverse_iterator crbegin() const noexcept;
+
+    /// <summary>
+    ///
+    /// </summary>
+    /// <returns></returns>
     const_reverse_iterator crend() const noexcept;
 
-    // Element access
+    // --------------------------------------------------------------------------------------------------
+    // Element Access
+    // --------------------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// Convert basic_str_view to const CharT*
+    /// </summary>
+    /// <returns></returns>
     constexpr const CharT *c_str() const noexcept;
+
+    /// <summary>
+    /// Convert basic_str_view to const CharT*.
+    /// </summary>
+    /// <returns></returns>
     constexpr const CharT *data() const noexcept;
+
+    /// <summary>
+    /// Accesses CharT element in provided position. Returns CharT&
+    /// </summary>
+    /// <param name="pos"></param>
+    /// <returns></returns>
     constexpr const_referance operator[](size_type pos) const noexcept;
-    constexpr const_referance at(size_type pos) const;
+
+    /// <summary>
+    /// Accesses the specified character with bounds checking
+    /// </summary>
+    /// <param name="pos"></param>
+    /// <returns></returns>
+    constexpr const_referance at(size_type pos) const; // TODO: bounds check
+
+    /// <summary>
+    /// Returns CharT& first element in basic_str_view
+    /// </summary>
+    /// <returns></returns>
     constexpr const_referance front() const;
+
+    /// <summary>
+    /// Returns CharT& last element in basic_str_view
+    /// </summary>
+    /// <returns></returns>
     constexpr const_referance back() const;
 
+    // --------------------------------------------------------------------------------------------------
     // Capacity
+    // --------------------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// Returns number of character in basic_str_view
+    /// </summary>
+    /// <returns></returns>
     constexpr size_type size() const noexcept;
+
+    /// <summary>
+    /// Returns number of character in basic_str_view
+    /// </summary>
+    /// <returns></returns>
     constexpr size_type length() const noexcept;
+
+    /// <summary>
+    /// Returns the maximum number of characters
+    /// </summary>
+    /// <returns></returns>
     constexpr size_type max_size() const noexcept;
+
+    /// <summary>
+    /// Checks whether the view is empty
+    /// </summary>
+    /// <returns></returns>
     constexpr bool empty() const noexcept;
 
+    // --------------------------------------------------------------------------------------------------
     // Modifiers
+    // --------------------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// Shrinks the view by moving its start forward
+    /// </summary>
+    /// <param name="n"></param>
     constexpr void remove_prefix(size_type n);
     constexpr void remove_suffix(size_type n);
     constexpr void swap(basic_str_view &v) noexcept;
 
-    // to std::string
+    // --------------------------------------------------------------------------------------------------
+    // to std::string()
+    // --------------------------------------------------------------------------------------------------
     template <typename Allocator = std::allocator<CharT>>
     constexpr std::basic_string<CharT, Traits, Allocator> to_string(const Allocator &all) const;
 
+    // --------------------------------------------------------------------------------------------------
     // Operators
+    // --------------------------------------------------------------------------------------------------
     size_type copy(CharT *dest, size_type count, size_type pos = 0) const;
     constexpr basic_str_view substr(size_type pos = 0, size_type count = npos) const;
     constexpr int compare(basic_str_view v) const noexcept;
@@ -191,20 +274,20 @@ template <typename CharT, typename Traits = std::char_traits<CharT>> struct basi
     constexpr size_type find_last_not_of(const CharT *s, size_type pos = npos) const;
 
 #if 0
-        std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,
-            std::basic_str_view<CharT, Traits> v);
+		std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& os,
+			std::basic_str_view<CharT, Traits> v);
 
-        constexpr std::string_view operator"" sv(const char* str, std::size_t len) noexcept;
-        constexpr std::u8string_view operator"" sv(const char8_t* str, std::size_t len) noexcept;
-        constexpr std::u16string_view operator"" sv(const char16_t* str, std::size_t len) noexcept;
-        constexpr std::u32string_view operator"" sv(const char32_t* str, std::size_t len) noexcept;
-        constexpr std::wstring_view operator"" sv(const wchar_t* str, std::size_t len) noexcept;
+		constexpr std::string_view operator"" sv(const char* str, std::size_t len) noexcept;
+		constexpr std::u8string_view operator"" sv(const char8_t* str, std::size_t len) noexcept;
+		constexpr std::u16string_view operator"" sv(const char16_t* str, std::size_t len) noexcept;
+		constexpr std::u32string_view operator"" sv(const char32_t* str, std::size_t len) noexcept;
+		constexpr std::wstring_view operator"" sv(const wchar_t* str, std::size_t len) noexcept;
 
-        template <> struct hash<std::string_view>;
-        template <> struct hash<std::wstring_view>;
-        template <> struct hash<std::u8string_view>;
-        template <> struct hash<std::u16string_view>;
-        template <> struct hash<std::u32string_view>;
+		template <> struct hash<std::string_view>;
+		template <> struct hash<std::wstring_view>;
+		template <> struct hash<std::u8string_view>;
+		template <> struct hash<std::u16string_view>;
+		template <> struct hash<std::u32string_view>;
 #endif
   private:
     const CharT *m_str;
