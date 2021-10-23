@@ -301,6 +301,9 @@ template <typename CharT, typename Traits>
 constexpr bool operator==(basic_str_view<CharT, Traits> lhs, basic_str_view<CharT, Traits> rhs) noexcept;
 
 template <typename CharT, typename Traits>
+constexpr bool operator==(basic_str_view<CharT, Traits> lhs, const CharT *rhs) noexcept;
+
+template <typename CharT, typename Traits>
 constexpr bool operator!=(basic_str_view<CharT, Traits> lhs, basic_str_view<CharT, Traits> rhs) noexcept;
 
 template <typename CharT, typename Traits>
@@ -447,6 +450,7 @@ template <typename CharT, typename Traits> inline constexpr bool basic_str_view<
     return m_length == 0;
 }
 
+#if 0
 template <typename CharT, typename Traits>
 inline constexpr void basic_str_view<CharT, Traits>::remove_prefix(size_type n)
 {
@@ -461,6 +465,7 @@ template <typename CharT, typename Traits>
 inline constexpr void basic_str_view<CharT, Traits>::swap(basic_str_view &v) noexcept
 {
 }
+#endif
 
 template <typename CharT, typename Traits>
 template <typename Allocator>
@@ -843,6 +848,12 @@ template <typename CharT, typename Traits>
 inline constexpr bool operator==(basic_str_view<CharT, Traits> lhs, basic_str_view<CharT, Traits> rhs) noexcept
 {
     return rhs.compare(rhs) == 0;
+}
+
+template <typename CharT, typename Traits>
+constexpr bool operator==(basic_str_view<CharT, Traits> lhs, const CharT *rhs) noexcept
+{
+    return lhs == basic_str_view<CharT, Traits>(rhs);
 }
 
 template <typename CharT, typename Traits>

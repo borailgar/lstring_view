@@ -3,11 +3,8 @@
 
 int main()
 {
-    using namespace std::string_literals;
-    auto rr = "Asdasd"s;
-
     using namespace lambda::sv_literals;
-    auto rra = "Asdasd"_sv;
+    auto rra = "ExampleSV"_sv;
 
     return 0;
 }
