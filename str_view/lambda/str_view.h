@@ -28,7 +28,7 @@ template <typename CharT, typename Traits = std::char_traits<CharT>> struct basi
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
     /// <summary>
-    /// Constant, special value. The exact meaning depends on the context.
+    /// Constant and value. The exact meaning depends on the context.
     /// </summary>
     static constexpr size_type npos = size_type(-1);
 
@@ -289,34 +289,12 @@ template <typename CharT, typename Traits = std::char_traits<CharT>> struct basi
     size_type m_length;
 };
 
+// ---------------------------------------------------------------------------------------------------------------------
+
 using str_view = basic_str_view<char>;
 using wstr_view = basic_str_view<wchar_t>;
 using u16str_view = basic_str_view<char16_t>;
 using u32str_view = basic_str_view<char32_t>;
-
-template <typename CharT, typename Traits>
-std::basic_ostream<CharT, Traits> &operator<<(std::basic_ostream<CharT, Traits> &os, basic_str_view<CharT, Traits> v);
-
-template <typename CharT, typename Traits>
-constexpr bool operator==(basic_str_view<CharT, Traits> lhs, basic_str_view<CharT, Traits> rhs) noexcept;
-
-template <typename CharT, typename Traits>
-constexpr bool operator==(basic_str_view<CharT, Traits> lhs, const CharT *rhs) noexcept;
-
-template <typename CharT, typename Traits>
-constexpr bool operator!=(basic_str_view<CharT, Traits> lhs, basic_str_view<CharT, Traits> rhs) noexcept;
-
-template <typename CharT, typename Traits>
-constexpr bool operator<(basic_str_view<CharT, Traits> lhs, basic_str_view<CharT, Traits> rhs) noexcept;
-
-template <typename CharT, typename Traits>
-constexpr bool operator<=(basic_str_view<CharT, Traits> lhs, basic_str_view<CharT, Traits> rhs) noexcept;
-
-template <typename CharT, typename Traits>
-constexpr bool operator>(basic_str_view<CharT, Traits> lhs, basic_str_view<CharT, Traits> rhs) noexcept;
-
-template <typename CharT, typename Traits>
-constexpr bool operator>=(basic_str_view<CharT, Traits> lhs, basic_str_view<CharT, Traits> rhs) noexcept;
 
 template <typename CharT, typename Traits>
 inline constexpr basic_str_view<CharT, Traits>::basic_str_view() noexcept : m_str(nullptr), m_length(0)
@@ -334,6 +312,15 @@ inline constexpr basic_str_view<CharT, Traits>::basic_str_view(const CharT *s)
     : m_str(s), m_length(trait_type::length(s))
 {
 }
+
+template <typename CharT, typename Traits>
+template <typename Allocator>
+inline basic_str_view<CharT, Traits>::basic_str_view(const std::basic_string<CharT, Traits, Allocator> &str) noexcept
+    : m_str(str.c_str()), m_length(str.size())
+{
+}
+
+// -----------------------------------------------------------------------------------------------------------------------
 
 template <typename CharT, typename Traits>
 inline typename basic_str_view<CharT, Traits>::const_iterator basic_str_view<CharT, Traits>::begin() const noexcept
@@ -387,6 +374,8 @@ inline typename basic_str_view<CharT, Traits>::const_reverse_iterator basic_str_
     return m_str;
 }
 
+// -----------------------------------------------------------------------------------------------------------------------
+
 template <typename CharT, typename Traits>
 inline constexpr const CharT *basic_str_view<CharT, Traits>::c_str() const noexcept
 {
@@ -425,6 +414,8 @@ inline constexpr typename basic_str_view<CharT, Traits>::const_referance basic_s
     return *m_str[m_length - 1];
 }
 
+// -----------------------------------------------------------------------------------------------------------------------
+
 template <typename CharT, typename Traits>
 inline constexpr typename basic_str_view<CharT, Traits>::size_type basic_str_view<CharT, Traits>::size() const noexcept
 {
@@ -450,6 +441,8 @@ template <typename CharT, typename Traits> inline constexpr bool basic_str_view<
     return m_length == 0;
 }
 
+// -----------------------------------------------------------------------------------------------------------------------
+
 #if 0
 template <typename CharT, typename Traits>
 inline constexpr void basic_str_view<CharT, Traits>::remove_prefix(size_type n)
@@ -467,12 +460,7 @@ inline constexpr void basic_str_view<CharT, Traits>::swap(basic_str_view &v) noe
 }
 #endif
 
-template <typename CharT, typename Traits>
-template <typename Allocator>
-inline basic_str_view<CharT, Traits>::basic_str_view(const std::basic_string<CharT, Traits, Allocator> &str) noexcept
-    : m_str(str.c_str()), m_length(str.size())
-{
-}
+// -----------------------------------------------------------------------------------------------------------------------
 
 template <typename CharT, typename Traits>
 template <typename Allocator>
@@ -510,7 +498,8 @@ inline constexpr basic_str_view<CharT, Traits> basic_str_view<CharT, Traits>::su
     return basic_str_view(m_str + pos, std::min(count, max_length));
 }
 
-// Compare
+// -----------------------------------------------------------------------------------------------------------------------
+
 template <typename CharT, typename Traits>
 inline constexpr int basic_str_view<CharT, Traits>::compare(basic_str_view v) const noexcept
 {
