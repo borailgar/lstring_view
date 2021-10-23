@@ -1,8 +1,13 @@
 #include "lambda/str_view.h"
+#include <string>
 
 int main()
 {
-    lambda::str_view str;
+    using namespace std::string_literals;
+    auto rr = "Asdasd"s;
+
+    using namespace lambda::sv_literals;
+    auto rra = "Asdasd"_sv;
 
     return 0;
 }
