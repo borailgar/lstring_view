@@ -39,6 +39,22 @@
 namespace lambda
 {
 
+namespace utility
+{
+/// <summary>
+/// Returns size of CharT array in compile time.
+/// With C++11/14 std::char_traits::length constexpr evaluation won't work. (msvc compiler)
+/// </summary>
+/// <param name="str"></param>
+/// <param name="count"></param>
+/// <returns></returns>
+constexpr size_t _length_(const char *str, size_t count = 0)
+{
+    return *str == '\0' ? count : _length_(str + 1, count + 1);
+}
+
+} // namespace utility
+
 template <typename CharT, typename Traits = std::char_traits<CharT>> struct basic_str_view
 {
     using char_type = CharT;
@@ -456,7 +472,7 @@ inline constexpr basic_str_view<CharT, Traits>::basic_str_view(const CharT *s, s
 
 template <typename CharT, typename Traits>
 inline constexpr basic_str_view<CharT, Traits>::basic_str_view(const CharT *s)
-    : m_str(s), m_length(trait_type::length(s))
+    : m_str(s), m_length(utility::_length_(s))
 {
 }
 
@@ -1234,25 +1250,28 @@ constexpr bool operator>=(const std::basic_string<CharT, Traits, Allocator> &std
     return basic_str_view<CharT, Traits>(std_str) == lhs;
 }
 
-constexpr str_view operator"" _sv(const char *str, std::size_t len) noexcept
+inline namespace sv_literals
+{
+constexpr str_view operator""_sv(const char *str, std::size_t len) noexcept
 {
     return str_view(str, len);
 }
 
-constexpr u16str_view operator"" _sv(const char16_t *str, std::size_t len) noexcept
+constexpr u16str_view operator""_sv(const char16_t *str, std::size_t len) noexcept
 {
     return u16str_view(str, len);
 }
 
-constexpr u32str_view operator"" _sv(const char32_t *str, std::size_t len) noexcept
+constexpr u32str_view operator""_sv(const char32_t *str, std::size_t len) noexcept
 {
     return u32str_view(str, len);
 }
 
-constexpr wstr_view operator"" _sv(const wchar_t *str, std::size_t len) noexcept
+constexpr wstr_view operator""_sv(const wchar_t *str, std::size_t len) noexcept
 {
     return wstr_view(str, len);
 }
+} // namespace sv_literals
 
 } // namespace lambda
 #endif

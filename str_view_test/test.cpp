@@ -1,4 +1,4 @@
-#include "../str_view/lambda/str_view.h"
+#include "../str_view/lambda/str_view.hpp"
 #include "gtest/gtest.h"
 
 // Def. Ctor
@@ -21,8 +21,7 @@ TEST(SV_Cpy, SV_Ctor)
     EXPECT_EQ(v0.data(), v1.data());
 }
 
-TEST(SV_CChar_Count, SV_Ctor)
+TEST(CppRefSV_Cpy, SV_Ctor)
 {
-    lambda::str_view v0("\0 123", 8);
-    printf("RESULT:%s\n", v0.data());
+    // constexpr lambda::str_view wcstr_v("asdas");
 }
