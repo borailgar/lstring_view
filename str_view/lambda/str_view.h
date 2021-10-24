@@ -1,3 +1,33 @@
+/**
+ * MIT License
+
+ * Copyright(c) 2021 Bora Ilgar
+
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this softwareand associated documentation files(the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and /or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions :
+
+ * The above copyright noticeand this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+*/
+
+/**
+ * @brief : C++11 compatible std::string_view implementation
+ *
+ * @author: Bora Ilgar
+ */
+
 #ifndef STR_VIEW_H
 #define STR_VIEW_H
 
@@ -34,6 +64,7 @@ template <typename CharT, typename Traits = std::char_traits<CharT>> struct basi
 
     // --------------------------------------------------------------------------------------------------
     // Constructors
+    // https://en.cppreference.com/w/cpp/string/basic_string_view/basic_string_view
     // --------------------------------------------------------------------------------------------------
 
     /// <summary>
@@ -42,6 +73,7 @@ template <typename CharT, typename Traits = std::char_traits<CharT>> struct basi
     /// </summary>
     /// <returns></returns>
     constexpr basic_str_view() noexcept;
+
     /// <summary>
     /// Copy constructor. Constructs a view of the same content as other. After
     /// construction, data() is equal to other.data(), and size() equal to
@@ -85,7 +117,9 @@ template <typename CharT, typename Traits = std::char_traits<CharT>> struct basi
 
     // --------------------------------------------------------------------------------------------------
     // Iterators
+    // https://en.cppreference.com/w/cpp/string/basic_string_view
     // --------------------------------------------------------------------------------------------------
+
     /// <summary>
     /// Iterator that returns string_view first elem as CharT*
     /// </summary>
@@ -162,7 +196,7 @@ template <typename CharT, typename Traits = std::char_traits<CharT>> struct basi
     /// </summary>
     /// <param name="pos"></param>
     /// <returns></returns>
-    constexpr const_referance at(size_type pos) const; // TODO: bounds check
+    constexpr const_referance at(size_type pos) const;
 
     /// <summary>
     /// Returns CharT& first element in basic_str_view
@@ -225,8 +259,33 @@ template <typename CharT, typename Traits = std::char_traits<CharT>> struct basi
     // --------------------------------------------------------------------------------------------------
     // Operators
     // --------------------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// Copies the substring [pos, pos + rcount) to the character array pointed to by dest, where rcount is the smaller
+    /// of count and size() - pos.
+    /// </summary>
+    /// <param name="dest"></param>
+    /// <param name="count"></param>
+    /// <param name="pos"></param>
+    /// <returns></returns>
     size_type copy(CharT *dest, size_type count, size_type pos = 0) const;
+
+    /// <summary>
+    /// Returns a view of the substring [pos, pos + rcount), where rcount is the smaller of count and size() - pos.
+    /// </summary>
+    /// <param name="pos"></param>
+    /// <param name="count"></param>
+    /// <returns></returns>
     constexpr basic_str_view substr(size_type pos = 0, size_type count = npos) const;
+
+    /// <summary>
+    /// The length rlen of the sequences to compare is the smaller of size() and v.size(). The function compares the two
+    /// views by calling traits::compare(data(), v.data(), rlen), and returns 0 based compare result.
+    ///
+    /// https://en.cppreference.com/w/cpp/string/basic_string_view/compare
+    /// </summary>
+    /// <param name="v"></param>
+    /// <returns></returns>
     constexpr int compare(basic_str_view v) const noexcept;
     constexpr int compare(size_type pos1, size_type count1, basic_str_view v) const;
     constexpr int compare(size_type pos1, size_type count1, basic_str_view v, size_type pos2, size_type count2) const;
@@ -234,10 +293,31 @@ template <typename CharT, typename Traits = std::char_traits<CharT>> struct basi
     constexpr int compare(size_type pos1, size_type count1, const CharT *s) const;
     constexpr int compare(size_type pos1, size_type count1, const CharT *s, size_type count2) const;
 
+    /// <summary>
+    /// Checks if the string view begins with the given prefix, where
+    ///  - the prefix is a string view.Effectively returns substr(0, sv.size()) == sv
+    ///  - the prefix is a single character.Effectively returns !empty() && Traits::eq(front(), c)
+    ///  - the prefix is a null - terminated character string.Effectively returns starts_with(basic_string_view(s))
+    ///
+    /// https://en.cppreference.com/w/cpp/string/basic_string_view/starts_with
+    /// </summary>
+    /// <param name="sv"></param>
+    /// <returns></returns>
     constexpr bool starts_with(basic_str_view sv) const noexcept;
     constexpr bool starts_with(CharT c) const noexcept;
     constexpr bool starts_with(const CharT *s) const;
 
+    /// <summary>
+    ///  Checks if the string view ends with the given suffix, where
+    ///   - the suffix is a string view.Effectively returns
+    ///         size() >= sv.size() && compare(size() - sv.size(), npos, sv) == 0
+    ///   - the suffix is a single character.Effectively returns !empty() && Traits::eq(back(), c)
+    ///   - the suffix is a null - terminated character string.Effectively returns ends_with(basic_string_view(s))
+    ///
+    /// https://en.cppreference.com/w/cpp/string/basic_string_view/ends_with
+    /// </summary>
+    /// <param name="sv"></param>
+    /// <returns></returns>
     constexpr bool ends_with(basic_str_view sv) const noexcept;
     constexpr bool ends_with(CharT c) const noexcept;
     constexpr bool ends_with(const CharT *s) const;
@@ -256,28 +336,72 @@ template <typename CharT, typename Traits = std::char_traits<CharT>> struct basi
     constexpr size_type rfind(const CharT *s, size_type pos, size_type count) const;
     constexpr size_type rfind(const CharT *s, size_type pos = npos) const;
 
-#if 0
+    /// <summary>
+    /// Finds the first occurrence of any of the characters of v in this view, starting at position pos.
+    /// Equivalent to find_first_of(basic_string_view(std::addressof(c), 1), pos).
+    /// Equivalent to find_first_of(basic_string_view(s, count), pos).
+    /// Equivalent to find_first_of(basic_string_view(s), pos).
+    ///
+    /// https://en.cppreference.com/w/cpp/string/basic_string_view/find_first_of
+    /// </summary>
+    /// <typeparam name="CharT"></typeparam>
+    /// <typeparam name="Traits"></typeparam>
+    /// <param name="v"></param>
+    /// <param name="pos"></param>
+    /// <returns></returns>
     constexpr size_type find_first_of(basic_str_view v, size_type pos = 0) const noexcept;
     constexpr size_type find_first_of(CharT c, size_type pos = 0) const noexcept;
     constexpr size_type find_first_of(const CharT *s, size_type pos, size_type count) const;
     constexpr size_type find_first_of(const CharT *s, size_type pos = 0) const;
 
+    /// <summary>
+    /// Finds the last occurence of any of the characters of v in this view, ending at position pos.
+    /// Equivalent to find_last_of(basic_string_view(std::addressof(c), 1), pos).
+    /// Equivalent to find_last_of(basic_string_view(s, count), pos).
+    /// Equivalent to find_last_of(basic_string_view(s), pos).
+    ///
+    /// https://en.cppreference.com/w/cpp/string/basic_string_view/find_last_of
+    /// </summary>
+    /// <param name="v"></param>
+    /// <param name="pos"></param>
+    /// <returns></returns>
     constexpr size_type find_last_of(basic_str_view v, size_type pos = npos) const noexcept;
     constexpr size_type find_last_of(CharT c, size_type pos = npos) const noexcept;
     constexpr size_type find_last_of(const CharT *s, size_type pos, size_type count) const;
     constexpr size_type find_last_of(const CharT *s, size_type pos = npos) const;
 
+    /// <summary>
+    /// Finds the first character not equal to any of the characters of v in this view, starting at position pos.
+    /// Equivalent to find_first_not_of(basic_string_view(std::addressof(c), 1), pos).
+    /// Equivalent to find_first_not_of(basic_string_view(s, count), pos).
+    /// Equivalent to find_first_not_of(basic_string_view(s), pos).
+    ///
+    /// https://en.cppreference.com/w/cpp/string/basic_string_view/find_first_not_of
+    /// </summary>
+    /// <param name="v"></param>
+    /// <param name="pos"></param>
+    /// <returns></returns>
     constexpr size_type find_first_not_of(basic_str_view v, size_type pos = 0) const noexcept;
     constexpr size_type find_first_not_of(CharT c, size_type pos = 0) const noexcept;
     constexpr size_type find_first_not_of(const CharT *s, size_type pos, size_type count) const;
     constexpr size_type find_first_not_of(const CharT *s, size_type pos = 0) const;
 
+    /// <summary>
+    /// Finds the last character not equal to any of the characters of v in this view, starting at position pos.
+    /// Equivalent to find_last_not_of(basic_string_view(std::addressof(c), 1), pos).
+    /// Equivalent to find_last_not_of(basic_string_view(s, count), pos).
+    /// Equivalent to find_last_not_of(basic_string_view(s), pos).
+    ///
+    /// https://en.cppreference.com/w/cpp/string/basic_string_view/find_last_not_of
+    /// </summary>
+    /// <param name="v"></param>
+    /// <param name="pos"></param>
+    /// <returns></returns>
     constexpr size_type find_last_not_of(basic_str_view v, size_type pos = npos) const noexcept;
     constexpr size_type find_last_not_of(CharT c, size_type pos = npos) const noexcept;
     constexpr size_type find_last_not_of(const CharT *s, size_type pos, size_type count) const;
     constexpr size_type find_last_not_of(const CharT *s, size_type pos = npos) const;
-
-       
+#if 0
         template <> struct hash<std::string_view>;
         template <> struct hash<std::wstring_view>;
         template <> struct hash<std::u8string_view>;
@@ -443,11 +567,11 @@ template <typename CharT, typename Traits> inline constexpr bool basic_str_view<
 
 // -----------------------------------------------------------------------------------------------------------------------
 
-#if 0
 template <typename CharT, typename Traits>
 inline constexpr void basic_str_view<CharT, Traits>::remove_prefix(size_type n)
 {
 }
+#if 0
 
 template <typename CharT, typename Traits>
 inline constexpr void basic_str_view<CharT, Traits>::remove_suffix(size_type n)
@@ -458,6 +582,7 @@ template <typename CharT, typename Traits>
 inline constexpr void basic_str_view<CharT, Traits>::swap(basic_str_view &v) noexcept
 {
 }
+
 #endif
 
 // -----------------------------------------------------------------------------------------------------------------------
@@ -718,121 +843,171 @@ inline std::basic_ostream<CharT, Traits> &operator<<(std::basic_ostream<CharT, T
 }
 
 // ------------------------------------------------------------------------------------------------------------------
-#if 0
+
 template <typename CharT, typename Traits>
 inline constexpr typename basic_str_view<CharT, Traits>::size_type basic_str_view<CharT, Traits>::find_first_of(
     basic_str_view v, size_type pos) const noexcept
 {
-    return find(v, pos);
+    for (size_type idx = pos; idx < m_length; ++idx)
+    {
+        for (size_type j = 0; j < v.size(); ++j)
+        {
+            if (m_str[j] == v[idx])
+            {
+                return j;
+            }
+        }
+    }
+    return npos;
 }
 
 template <typename CharT, typename Traits>
 inline constexpr typename basic_str_view<CharT, Traits>::size_type basic_str_view<CharT, Traits>::find_first_of(
     CharT c, size_type pos) const noexcept
 {
-    return find(c, pos);
+    return find_first_of(basic_str_view<CharT, Traits>(&c, 1), pos);
 }
 
 template <typename CharT, typename Traits>
 inline constexpr typename basic_str_view<CharT, Traits>::size_type basic_str_view<CharT, Traits>::find_first_of(
     const CharT *s, size_type pos, size_type count) const
 {
-    return find(basic_str_view<CharT, Traits>(s, count), pos);
+    return find_first_of(basic_str_view<CharT, Traits>(s, count), pos);
 }
 
 template <typename CharT, typename Traits>
 inline constexpr typename basic_str_view<CharT, Traits>::size_type basic_str_view<CharT, Traits>::find_first_of(
     const CharT *s, size_type pos) const
 {
-    return find(basic_str_view<CharT, Traits>(s), pos);
+    return find_first_of(basic_str_view<CharT, Traits>(s), pos);
 }
+
+// -------------------------------------------------------------------------------------------------------------
 
 template <typename CharT, typename Traits>
 inline constexpr typename basic_str_view<CharT, Traits>::size_type basic_str_view<CharT, Traits>::find_last_of(
-    basic_str_view v, size_type pos) const noexcept
+    basic_str_view v, size_type pos /*where to end*/) const noexcept
 {
-    return size_type();
+    if (v.empty())
+        return npos;
+
+    const auto len = std::min(m_length - 1, pos);
+    for (size_type idx{0}; idx <= len; ++idx)
+    {
+        const auto = len - idx;
+        for (size_type jdx{0}; jdx <= len; ++jdx)
+        {
+            if (m_str[idx] == v[jdx])
+            {
+                return jdx;
+            }
+        }
+    }
+    return npos;
 }
 
 template <typename CharT, typename Traits>
 inline constexpr typename basic_str_view<CharT, Traits>::size_type basic_str_view<CharT, Traits>::find_last_of(
     CharT c, size_type pos) const noexcept
 {
-    return size_type();
+    return find_last_of(basic_str_view<CharT, Traits>(&c, 1), pos);
 }
 
 template <typename CharT, typename Traits>
 inline constexpr typename basic_str_view<CharT, Traits>::size_type basic_str_view<CharT, Traits>::find_last_of(
     const CharT *s, size_type pos, size_type count) const
 {
-    return size_type();
+    return find_last_of(basic_str_view<CharT, Traits>(s, count), pos);
 }
 
 template <typename CharT, typename Traits>
 inline constexpr typename basic_str_view<CharT, Traits>::size_type basic_str_view<CharT, Traits>::find_last_of(
     const CharT *s, size_type pos) const
 {
-    return size_type();
+    return find_last_of(basic_str_view<CharT, Traits>(s), pos);
 }
 
 template <typename CharT, typename Traits>
 inline constexpr typename basic_str_view<CharT, Traits>::size_type basic_str_view<CharT, Traits>::find_first_not_of(
     basic_str_view v, size_type pos) const noexcept
 {
-    return size_type();
+    for (size_type idx = pos; idx < m_length; ++idx)
+    {
+        for (size_type j = 0; j < v.size(); ++j)
+        {
+            if (m_str[j] != v[idx])
+            {
+                return j;
+            }
+        }
+    }
+    return npos;
 }
 
 template <typename CharT, typename Traits>
 inline constexpr typename basic_str_view<CharT, Traits>::size_type basic_str_view<CharT, Traits>::find_first_not_of(
     CharT c, size_type pos) const noexcept
 {
-    return size_type();
+    return find_first_not_of(basic_str_view<CharT, Traits>(&c, 1), pos);
 }
 
 template <typename CharT, typename Traits>
 inline constexpr typename basic_str_view<CharT, Traits>::size_type basic_str_view<CharT, Traits>::find_first_not_of(
     const CharT *s, size_type pos, size_type count) const
 {
-    return size_type();
+    return find_first_not_of(basic_str_view<CharT, Traits>(s, count), pos);
 }
 
 template <typename CharT, typename Traits>
 inline constexpr typename basic_str_view<CharT, Traits>::size_type basic_str_view<CharT, Traits>::find_first_not_of(
     const CharT *s, size_type pos) const
 {
-    return size_type();
+    return find_first_not_of(basic_str_view<CharT, Traits>(s), pos);
 }
 
 template <typename CharT, typename Traits>
 inline constexpr typename basic_str_view<CharT, Traits>::size_type basic_str_view<CharT, Traits>::find_last_not_of(
     basic_str_view v, size_type pos) const noexcept
 {
-    return size_type();
+    if (v.empty())
+        return npos;
+
+    const auto len = std::min(m_length - 1, pos);
+    for (size_type idx{0}; idx <= len; ++idx)
+    {
+        const auto = len - idx;
+        for (size_type jdx{0}; jdx <= len; ++jdx)
+        {
+            if (m_str[idx] != v[jdx])
+            {
+                return jdx;
+            }
+        }
+    }
+    return npos;
 }
 
 template <typename CharT, typename Traits>
 inline constexpr typename basic_str_view<CharT, Traits>::size_type basic_str_view<CharT, Traits>::find_last_not_of(
     CharT c, size_type pos) const noexcept
 {
-    return size_type();
+    return find_last_not_of(basic_str_view<CharT, Traits>(&c, 1), pos);
 }
 
 template <typename CharT, typename Traits>
 inline constexpr typename basic_str_view<CharT, Traits>::size_type basic_str_view<CharT, Traits>::find_last_not_of(
     const CharT *s, size_type pos, size_type count) const
 {
-    return size_type();
+    return find_last_not_of(basic_str_view<CharT, Traits>(s, count), pos);
 }
 
 template <typename CharT, typename Traits>
 inline constexpr typename basic_str_view<CharT, Traits>::size_type basic_str_view<CharT, Traits>::find_last_not_of(
     const CharT *s, size_type pos) const
 {
-    return size_type();
+    return find_last_not_of(basic_str_view<CharT, Traits>(s), pos);
 }
-#endif
 
-// TODO: Implement overloads
 template <typename CharT, typename Traits>
 inline constexpr bool operator==(basic_str_view<CharT, Traits> lhs, basic_str_view<CharT, Traits> rhs) noexcept
 {
@@ -846,15 +1021,89 @@ constexpr bool operator==(basic_str_view<CharT, Traits> lhs, const CharT *rhs) n
 }
 
 template <typename CharT, typename Traits>
+constexpr bool operator==(const CharT *rhs, basic_str_view<CharT, Traits> lhs) noexcept
+{
+    return basic_str_view<CharT, Traits>(rhs) == lhs;
+}
+
+template <typename CharT, typename Traits, typename Allocator>
+constexpr bool operator==(basic_str_view<CharT, Traits> lhs,
+                          const std::basic_string<CharT, Traits, Allocator> &std_str) noexcept
+{
+    return lhs == basic_str_view<CharT, Traits>(std_str);
+}
+
+template <typename CharT, typename Traits, typename Allocator>
+constexpr bool operator==(const std::basic_string<CharT, Traits, Allocator> &std_str,
+                          basic_str_view<CharT, Traits> lhs) noexcept
+{
+    return basic_str_view<CharT, Traits>(std_str) == lhs;
+}
+
+//
+template <typename CharT, typename Traits>
 inline constexpr bool operator!=(basic_str_view<CharT, Traits> lhs, basic_str_view<CharT, Traits> rhs) noexcept
 {
     return rhs.compare(rhs) != 0;
 }
 
 template <typename CharT, typename Traits>
+constexpr bool operator!=(basic_str_view<CharT, Traits> lhs, const CharT *rhs) noexcept
+{
+    return lhs != basic_str_view<CharT, Traits>(rhs);
+}
+
+template <typename CharT, typename Traits>
+constexpr bool operator!=(const CharT *rhs, basic_str_view<CharT, Traits> lhs) noexcept
+{
+    return basic_str_view<CharT, Traits>(rhs) != lhs;
+}
+
+template <typename CharT, typename Traits, typename Allocator>
+constexpr bool operator!=(basic_str_view<CharT, Traits> lhs,
+                          const std::basic_string<CharT, Traits, Allocator> &std_str) noexcept
+{
+    return lhs != basic_str_view<CharT, Traits>(std_str);
+}
+
+template <typename CharT, typename Traits, typename Allocator>
+constexpr bool operator!=(const std::basic_string<CharT, Traits, Allocator> &std_str,
+                          basic_str_view<CharT, Traits> lhs) noexcept
+{
+    return basic_str_view<CharT, Traits>(std_str) == lhs;
+}
+
+//
+template <typename CharT, typename Traits>
 inline constexpr bool operator<(basic_str_view<CharT, Traits> lhs, basic_str_view<CharT, Traits> rhs) noexcept
 {
     return rhs.compare(rhs) < 0;
+}
+
+template <typename CharT, typename Traits>
+constexpr bool operator<(basic_str_view<CharT, Traits> lhs, const CharT *rhs) noexcept
+{
+    return lhs < basic_str_view<CharT, Traits>(rhs);
+}
+
+template <typename CharT, typename Traits>
+constexpr bool operator<(const CharT *rhs, basic_str_view<CharT, Traits> lhs) noexcept
+{
+    return basic_str_view<CharT, Traits>(rhs) < lhs;
+}
+
+template <typename CharT, typename Traits, typename Allocator>
+constexpr bool operator<(basic_str_view<CharT, Traits> lhs,
+                         const std::basic_string<CharT, Traits, Allocator> &std_str) noexcept
+{
+    return lhs < basic_str_view<CharT, Traits>(std_str);
+}
+
+template <typename CharT, typename Traits, typename Allocator>
+constexpr bool operator<(const std::basic_string<CharT, Traits, Allocator> &std_str,
+                         basic_str_view<CharT, Traits> lhs) noexcept
+{
+    return basic_str_view<CharT, Traits>(std_str) == lhs;
 }
 
 template <typename CharT, typename Traits>
@@ -864,19 +1113,97 @@ inline constexpr bool operator<=(basic_str_view<CharT, Traits> lhs, basic_str_vi
 }
 
 template <typename CharT, typename Traits>
+constexpr bool operator<=(basic_str_view<CharT, Traits> lhs, const CharT *rhs) noexcept
+{
+    return lhs <= basic_str_view<CharT, Traits>(rhs);
+}
+
+template <typename CharT, typename Traits>
+constexpr bool operator<=(const CharT *rhs, basic_str_view<CharT, Traits> lhs) noexcept
+{
+    return basic_str_view<CharT, Traits>(rhs) < lhs;
+}
+
+template <typename CharT, typename Traits, typename Allocator>
+constexpr bool operator<=(basic_str_view<CharT, Traits> lhs,
+                          const std::basic_string<CharT, Traits, Allocator> &std_str) noexcept
+{
+    return lhs < basic_str_view<CharT, Traits>(std_str);
+}
+
+template <typename CharT, typename Traits, typename Allocator>
+constexpr bool operator<=(const std::basic_string<CharT, Traits, Allocator> &std_str,
+                          basic_str_view<CharT, Traits> lhs) noexcept
+{
+    return basic_str_view<CharT, Traits>(std_str) == lhs;
+}
+//
+
+template <typename CharT, typename Traits>
 inline constexpr bool operator>(basic_str_view<CharT, Traits> lhs, basic_str_view<CharT, Traits> rhs) noexcept
 {
     return rhs.compare(rhs) > 0;
 }
 
 template <typename CharT, typename Traits>
+constexpr bool operator>(basic_str_view<CharT, Traits> lhs, const CharT *rhs) noexcept
+{
+    return lhs > basic_str_view<CharT, Traits>(rhs);
+}
+
+template <typename CharT, typename Traits>
+constexpr bool operator>(const CharT *rhs, basic_str_view<CharT, Traits> lhs) noexcept
+{
+    return basic_str_view<CharT, Traits>(rhs) < lhs;
+}
+
+template <typename CharT, typename Traits, typename Allocator>
+constexpr bool operator>(basic_str_view<CharT, Traits> lhs,
+                         const std::basic_string<CharT, Traits, Allocator> &std_str) noexcept
+{
+    return lhs < basic_str_view<CharT, Traits>(std_str);
+}
+
+template <typename CharT, typename Traits, typename Allocator>
+constexpr bool operator>(const std::basic_string<CharT, Traits, Allocator> &std_str,
+                         basic_str_view<CharT, Traits> lhs) noexcept
+{
+    return basic_str_view<CharT, Traits>(std_str) == lhs;
+}
+
+//
+template <typename CharT, typename Traits>
 inline constexpr bool operator>=(basic_str_view<CharT, Traits> lhs, basic_str_view<CharT, Traits> rhs) noexcept
 {
     return rhs.compare(rhs) >= 0;
 }
 
-inline namespace sv_literals
+template <typename CharT, typename Traits>
+constexpr bool operator>=(basic_str_view<CharT, Traits> lhs, const CharT *rhs) noexcept
 {
+    return lhs >= basic_str_view<CharT, Traits>(rhs);
+}
+
+template <typename CharT, typename Traits>
+constexpr bool operator>=(const CharT *rhs, basic_str_view<CharT, Traits> lhs) noexcept
+{
+    return basic_str_view<CharT, Traits>(rhs) < lhs;
+}
+
+template <typename CharT, typename Traits, typename Allocator>
+constexpr bool operator>=(basic_str_view<CharT, Traits> lhs,
+                          const std::basic_string<CharT, Traits, Allocator> &std_str) noexcept
+{
+    return lhs >= basic_str_view<CharT, Traits>(std_str);
+}
+
+template <typename CharT, typename Traits, typename Allocator>
+constexpr bool operator>=(const std::basic_string<CharT, Traits, Allocator> &std_str,
+                          basic_str_view<CharT, Traits> lhs) noexcept
+{
+    return basic_str_view<CharT, Traits>(std_str) == lhs;
+}
+
 constexpr str_view operator"" _sv(const char *str, std::size_t len) noexcept
 {
     return str_view(str, len);
@@ -897,6 +1224,5 @@ constexpr wstr_view operator"" _sv(const wchar_t *str, std::size_t len) noexcept
     return wstr_view(str, len);
 }
 
-} // namespace sv_literals
 } // namespace lambda
 #endif
