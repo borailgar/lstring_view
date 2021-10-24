@@ -1,6 +1,6 @@
 ## lstring_view
 
-#### C++14 compatible header-only **std::string_view** implementation       
+#### C++11/14 compatible header-only **std::string_view** implementation       
   - Compile time evaluation: 
   ```c++
     using namespace lambda::sv_literals;
