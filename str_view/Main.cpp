@@ -1,22 +1,19 @@
-#include "lambda/str_view.h"
+#include "lambda/str_view.hpp"
 #include <iostream>
-#include <string>
 
 int main()
 {
-#if 0
+    constexpr lambda::str_view str = "asd";
+
     using namespace lambda::sv_literals;
-    auto rra = "ExampleSV"_sv;
-    auto rra2 = "ExampleSV"_sv;
 
-    auto is_eq = rra == rra2;
-    std::cout << std::boolalpha << is_eq << std::endl;
-    std::cout << rra << std::endl;
+    constexpr lambda::str_view ex0 = "ExampleSV"_sv;
+    static_assert(ex0.size() > 1, "");
 
-    std::string as{"ass"};
-    lambda::str_view asd = as;
+    constexpr auto ex1 = "Example2SV"_sv;
+    static_assert(ex1.size() > 1, "");
 
-    std::cout << asd << std::endl;
-#endif
+    auto is_eq = ex0 == ex1;
+
     return 0;
 }
