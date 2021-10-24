@@ -13,7 +13,5 @@ int main()
     constexpr auto ex1 = "Example2SV"_sv;
     static_assert(ex1.size() > 1, "");
 
-    auto is_eq = ex0 == ex1;
-
     return 0;
 }

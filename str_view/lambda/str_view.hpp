@@ -23,7 +23,7 @@
 */
 
 /**
- * @brief : C++11 compatible std::string_view implementation
+ * @brief : C++14 compatible std::string_view implementation
  * @date  : 20.10.2021
  * @author: Bora Ilgar
  */
@@ -41,6 +41,7 @@ namespace lambda
 
 namespace utility
 {
+
 /// <summary>
 /// Returns size of CharT array in compile time.
 /// With C++11/14 std::char_traits::length constexpr evaluation won't work. (msvc compiler)
@@ -562,7 +563,7 @@ template <typename CharT, typename Traits>
 inline constexpr typename basic_str_view<CharT, Traits>::const_referance basic_str_view<CharT, Traits>::at(
     size_type pos) const
 {
-    return pos < m_length ? m_str[pos] : throw std::out_of_range("Index out of range std::string_view::at");
+    return pos < m_length ? m_str[pos] : throw std::out_of_range("Index out of range lambda::str_view::at");
 }
 
 template <typename CharT, typename Traits>
@@ -674,7 +675,7 @@ inline constexpr basic_str_view<CharT, Traits> basic_str_view<CharT, Traits>::su
 template <typename CharT, typename Traits>
 inline constexpr int basic_str_view<CharT, Traits>::compare(basic_str_view v) const noexcept
 {
-    const size_type rlen = (m_length, v.length());
+    const size_type rlen = std::min(m_length, v.length());
     const int compare = trait_type::compare(m_str, v.m_str, rlen);
 
     return (compare ? compare : (m_length < v.m_length ? -1 : (m_length > v.m_length ? 1 : 0)));
@@ -940,8 +941,8 @@ inline constexpr typename basic_str_view<CharT, Traits>::size_type basic_str_vie
     const auto len = std::min(m_length - 1, pos);
     for (size_type idx{0}; idx <= len; ++idx)
     {
-        const auto = len - idx;
-        for (size_type jdx{0}; jdx <= len; ++jdx)
+        const auto j = len - idx;
+        for (size_type jdx{0}; jdx < j; ++jdx)
         {
             if (m_str[idx] == v[jdx])
             {
@@ -1021,8 +1022,8 @@ inline constexpr typename basic_str_view<CharT, Traits>::size_type basic_str_vie
     const auto len = std::min(m_length - 1, pos);
     for (size_type idx{0}; idx <= len; ++idx)
     {
-        const auto = len - idx;
-        for (size_type jdx{0}; jdx <= len; ++jdx)
+        const auto j = len - idx;
+        for (size_type jdx{0}; jdx < j; ++jdx)
         {
             if (m_str[idx] != v[jdx])
             {
@@ -1271,7 +1272,7 @@ constexpr wstr_view operator""_sv(const wchar_t *str, std::size_t len) noexcept
 {
     return wstr_view(str, len);
 }
-} // namespace sv_literals
 
+} // namespace sv_literals
 } // namespace lambda
 #endif
