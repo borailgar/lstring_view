@@ -322,15 +322,37 @@ template <typename CharT, typename Traits = std::char_traits<CharT>> struct basi
     constexpr bool ends_with(CharT c) const noexcept;
     constexpr bool ends_with(const CharT *s) const;
 
+    /// <summary>
+    /// Checks if the string view contains the given substring, where
+    /// the substring is a string view.
+    /// the substring is a single character.
+    /// the substring is a null - terminated character string.
+    ///
+    /// https://en.cppreference.com/w/cpp/string/basic_string_view/contains
+    /// </summary>
+    /// <param name="sv"></param>
+    /// <returns></returns>
     constexpr bool contains(basic_str_view sv) const noexcept;
     constexpr bool contains(CharT c) const noexcept;
     constexpr bool contains(const CharT *s) const;
 
+    /// <summary>
+    /// Finds the first substring equal to the given character sequence.
+    /// </summary>
+    /// <param name="v"></param>
+    /// <param name="pos"></param>
+    /// <returns></returns>
     constexpr size_type find(basic_str_view v, size_type pos = 0) const noexcept;
     constexpr size_type find(CharT ch, size_type pos = 0) const noexcept;
     constexpr size_type find(const CharT *s, size_type pos, size_type count) const;
     constexpr size_type find(const CharT *s, size_type pos = 0) const;
 
+    /// <summary>
+    /// Finds the last substring equal to the given character sequence.
+    /// </summary>
+    /// <param name="v"></param>
+    /// <param name="pos"></param>
+    /// <returns></returns>
     constexpr size_type rfind(basic_str_view v, size_type pos = npos) const noexcept;
     constexpr size_type rfind(CharT c, size_type pos = npos) const noexcept;
     constexpr size_type rfind(const CharT *s, size_type pos, size_type count) const;
@@ -401,6 +423,7 @@ template <typename CharT, typename Traits = std::char_traits<CharT>> struct basi
     constexpr size_type find_last_not_of(CharT c, size_type pos = npos) const noexcept;
     constexpr size_type find_last_not_of(const CharT *s, size_type pos, size_type count) const;
     constexpr size_type find_last_not_of(const CharT *s, size_type pos = npos) const;
+
 #if 0
         template <> struct hash<std::string_view>;
         template <> struct hash<std::wstring_view>;
@@ -570,20 +593,27 @@ template <typename CharT, typename Traits> inline constexpr bool basic_str_view<
 template <typename CharT, typename Traits>
 inline constexpr void basic_str_view<CharT, Traits>::remove_prefix(size_type n)
 {
+    if (n > m_length)
+    {
+        throw std::out_of_range("Index out of range in lambda::str_view::remove_prefix");
+    }
+
+    m_str = m_str + n;
+    m_length -= n;
 }
-#if 0
 
 template <typename CharT, typename Traits>
 inline constexpr void basic_str_view<CharT, Traits>::remove_suffix(size_type n)
 {
+    m_length -= n;
 }
 
 template <typename CharT, typename Traits>
 inline constexpr void basic_str_view<CharT, Traits>::swap(basic_str_view &v) noexcept
 {
+    std::swap(m_str, v.m_str);
+    std::swap(m_length, v.m_length);
 }
-
-#endif
 
 // -----------------------------------------------------------------------------------------------------------------------
 
