@@ -28,8 +28,8 @@
 ```
 
 **TODO :**
-  - **Missing unit-tests.
-  - **Compile time string_v concat? 
+  - unit-tests!
+  - Compile time string concatenating? 
     
 
     
