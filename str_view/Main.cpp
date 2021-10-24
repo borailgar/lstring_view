@@ -3,10 +3,8 @@
 
 int main()
 {
-    constexpr lambda::str_view str = "asd";
-
     using namespace lambda::sv_literals;
-
+    
     constexpr lambda::str_view ex0 = "ExampleSV"_sv;
     static_assert(ex0.size() > 1, "");
 
