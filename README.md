@@ -28,9 +28,7 @@
 ```
 
 **TODO :**
-  - unit-tests!
-  - Compile time string concatenating? 
-    
+  - unit-tests!    
 
     
 
