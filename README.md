@@ -28,7 +28,7 @@
 ```
 
 **TODO :**
-  - **Unit tests are not completed yet.
+  - **Missing unit-tests.
   - **Compile time string_v concat? 
     
 
