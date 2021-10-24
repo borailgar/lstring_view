@@ -23,7 +23,7 @@
 */
 
 /**
- * @brief : C++11 compatible std::string_view implementation
+ * @brief : C++11/14 compatible std::string_view implementation
  * @date  : 20.10.2021
  * @author: Bora Ilgar
  */
