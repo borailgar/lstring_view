@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="lambda\str_view.h">
+    <ClInclude Include="lambda\str_view.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -139,7 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="lambda\str_view.h" />
+    <ClInclude Include="lambda\str_view.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
