@@ -17,7 +17,7 @@
       - **starts_with(const CharT*), 
       - **ends_with(const CharT*) 
  ```c++
-    constexpr lambda::str_view uri = "http://example.com"_sv;
+    constexpr auto uri = "http://example.com"_sv;
     /*constexpr */ auto res = uri.starts_with("http");
 
     if (uri.starts_with("http"))
